@@ -34,7 +34,7 @@ public class DataConfiguration {
 			roleRepository.save(role);
 			User user = new User();
 			user.setUsername("admin");
-			user.setPassword(encoder.encode("tolik56861"));
+			user.setPassword(encoder.encode("12345"));
 			user.addRole(role);
 			userRepository.save(user);
 	
