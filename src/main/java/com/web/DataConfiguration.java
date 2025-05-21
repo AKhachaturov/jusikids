@@ -2,42 +2,42 @@ package com.web;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.Product.Type;
+import com.web.security.Role;
+import com.web.security.RoleRepository;
+import com.web.security.User;
+import com.web.security.UserRepository;
 
 import jakarta.transaction.Transactional;
 
 @Configuration
+@Profile("dev")
 public class DataConfiguration {
 	
 	@Bean
-	public CommandLineRunner dataLoader(ProductRepository repo, OAuthClientsRepository clientRep, PasswordEncoder encoder, ObjectMapper objectMapper) {
+	public CommandLineRunner dataLoader(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ObjectMapper objectMapper) {
 		return args -> {
-			String json = new String(Files.readAllBytes(Paths.get("src/test/java/com/web/unit/user.json")));
-			ProductRequest productRequest = objectMapper.readValue(json, ProductRequest.class);
-			Product product = new Product(productRequest);
-			repo.save(product);
-			
-			OAuthClient client = new OAuthClient();
-			client.setClientId("admin");
-			client.setClientSecret(encoder.encode("password"));
-			client.setGrantTypes("client_credentials");
-			client.setScopes("admin");
-			client.setAccessTokenValidationSeconds(3600L);
-			client.setRefreshTokenValidationSeconds(7200L);
-			
-			clientRep.save(client);
-			
-			
-			
+			Role role = new Role();
+			role.setName("ADMIN");
+			roleRepository.save(role);
+			User user = new User();
+			user.setUsername("admin");
+			user.setPassword(encoder.encode("tolik56861"));
+			user.addRole(role);
+			userRepository.save(user);
+	
 		};
 	}
 }

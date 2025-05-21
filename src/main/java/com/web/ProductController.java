@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path="/api/products",
 				produces="application/json")
-@CrossOrigin
+@CrossOrigin(value="http://localhost:3000")
 @Validated
 public class ProductController {
 	
@@ -50,8 +50,19 @@ public class ProductController {
 	}
 	
 	@GetMapping
-	public Page<ProductDTO> getAllProducts(@RequestParam(required=false) String type, @PageableDefault(size=20) @MaxPageSize(value=20) Pageable pageable) throws Exception{
-		return productService.findAllProducts(type, pageable);
+	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(required=false) String type, @PageableDefault(size=20) @MaxPageSize(value=20) Pageable pageable) throws Exception{
+		Page<ProductDTO> products = null;
+		
+		try {
+			products = productService.findAllProducts(type, pageable);
+		}catch(Exception exc) {
+			if(exc instanceof IllegalArgumentException) {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
+		}
+		
+		return new ResponseEntity<>(products, HttpStatus.OK);
+		
 	}
 	
 	@GetMapping("/{id}")

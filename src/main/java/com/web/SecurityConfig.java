@@ -3,6 +3,7 @@ package com.web;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@Profile("test")
 public class SecurityConfig {
 	
 	@SuppressWarnings({ "removal" })
@@ -26,8 +28,8 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 		.authorizeHttpRequests(auth -> auth
-				.requestMatchers(HttpMethod.DELETE).hasAuthority("SCOPE_admin")
-				.requestMatchers(HttpMethod.POST, "api/products").hasAuthority("SCOPE_admin")
+				.requestMatchers(HttpMethod.DELETE, "api/**").hasAuthority("SCOPE_admin")
+				.requestMatchers(HttpMethod.POST, "api/products/**").hasAuthority("SCOPE_admin")
 				.requestMatchers(HttpMethod.PATCH, "api/products/**").hasAuthority("SCOPE_admin")
 				.requestMatchers(HttpMethod.GET).permitAll()
 				.anyRequest().hasAuthority("SCOPE_admin")
@@ -40,6 +42,6 @@ public class SecurityConfig {
 	
 	@Bean
 	public JwtDecoder jwkDecoder() {
-		return NimbusJwtDecoder.withJwkSetUri("http://localhost:9090/oauth2/jwks").build();
+		return NimbusJwtDecoder.withJwkSetUri("http://localhost:8080/oauth2/jwks").build();
 	}
 }

@@ -19,6 +19,7 @@ target/
 ### Ignore YAML ###
 *.yml
 *.yaml
+*.env
 
 ### IntelliJ IDEA ###
 .idea

@@ -1,5 +1,6 @@
 package com.web;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("test")
 public class OAuthClientService implements RegisteredClientRepository {
 
 	private final OAuthClientsRepository clientRep;

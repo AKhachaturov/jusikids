@@ -1,6 +1,9 @@
 package com.web;
 
 import jakarta.persistence.Table;
+
+import org.springframework.context.annotation.Profile;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "clients")
 @NoArgsConstructor
+@Profile("test")
 public class OAuthClient {
 
 	@Id
